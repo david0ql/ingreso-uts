@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:ingresouts/src/screens/tabs/list_students.dart';
+import 'package:ingresouts/src/screens/tabs/profile.dart';
+import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
+import 'package:ingresouts/src/widgets/custom_bottom_navigation.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,11 +19,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: const SafeArea(
-        child: Center(
-          child: Text('HomeScreen'),
-        ),
+        child: HomeSwitch(),
       ),
       floatingActionButton: FloatingActionButton(
+        elevation: 0,
         backgroundColor: UserTheme.primaryColor,
         onPressed: () async {
           String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -43,7 +47,25 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.white,
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: const CustomBottomNavigation(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+}
+
+class HomeSwitch extends StatelessWidget {
+  const HomeSwitch({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomService = Provider.of<BottomService>(context);
+    switch (bottomService.selectedIndex) {
+      case 0:
+        return const ListStudentsTab();
+      case 1:
+        return const ProfileTab();
+      default:
+        return const ListStudentsTab();
+    }
   }
 }

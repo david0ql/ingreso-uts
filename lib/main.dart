@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:ingresouts/src/preferences_user/preferences_user.dart';
 import 'package:ingresouts/src/screens/screens.dart';
+import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   UserPreferences.init();
-  runApp(const MyApp());
+  runApp(const AppState());
+}
+
+class AppState extends StatelessWidget {
+  const AppState({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BottomService>(
+          create: (context) => BottomService(),
+        )
+      ],
+      child: const MyApp(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
