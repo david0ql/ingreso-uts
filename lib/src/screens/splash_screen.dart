@@ -13,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       UserPreferences.correo == ""
           ? Navigator.pushReplacementNamed(context, 'login')
           : Navigator.pushReplacementNamed(context, 'home');
@@ -29,8 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       height: double.infinity,
       color: UserTheme.primaryColor,
       child: Center(
-        child: Lottie.network(
-            "https://assets6.lottiefiles.com/packages/lf20_bneaqhes.json"),
+        child: Lottie.asset("assets/splash.json"),
       ),
     ));
   }

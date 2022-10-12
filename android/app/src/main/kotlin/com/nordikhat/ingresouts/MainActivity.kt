@@ -1,4 +1,4 @@
-package com.example.ingresouts
+package com.nordikhat.ingresouts
 
 import io.flutter.embedding.android.FlutterActivity
 
