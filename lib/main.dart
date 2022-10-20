@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Ingreso UTS',
+      title: 'Ingreso UTS - David',
       initialRoute: 'splash',
       routes: {
         'home': (context) => const HomeScreen(),
