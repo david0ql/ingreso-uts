@@ -4,7 +4,7 @@ import 'package:ingresouts/src/screens/core/list_students.dart';
 import 'package:ingresouts/src/screens/core/profile.dart';
 import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
-import 'package:ingresouts/src/widgets/custom_bottom_navigation.dart';
+import 'package:ingresouts/src/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,17 +28,22 @@ class _HomeScreenState extends State<HomeScreen> {
           String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#3D8BEF', 'Cancelar', true, ScanMode.QR);
           String result = barcodeScanRes.substring(55);
           showDialog(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                    title: const Center(child: Center(child: Text("Usuario escaneado:"))),
-                    content: Text(result),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ));
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Center(
+                child: Center(
+                  child: Text("Usuario escaneado:"),
+                ),
+              ),
+              content: Text(result),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
         },
         child: const Icon(
           Icons.qr_code_scanner_outlined,

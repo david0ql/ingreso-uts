@@ -19,6 +19,12 @@ class _ProfileTabState extends State<ProfileTab> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          FutureBuilder(
+            future: bottomService.getName(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return Text(bottomService.nombre);
+            },
+          ),
           ElevatedButton(
               style: ElevatedButton.styleFrom(elevation: 1),
               onPressed: () async {
