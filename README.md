@@ -13,3 +13,8 @@ flutter pub get
 ```
 flutter run
 ```
+
+
+## Developed by
+
+David Gomez
