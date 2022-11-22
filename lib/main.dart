@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ingresouts/src/preferences_user/preferences_user.dart';
-import 'package:ingresouts/src/screens/screens.dart';
+import 'package:ingresouts/src/auth/auth_config.dart';
+import 'package:ingresouts/src/routes/routes.dart';
 import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  UserPreferences.init();
   runApp(const AppState());
 }
 
@@ -33,14 +31,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: AuthAzure.navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'Ingreso UTS - David',
+      title: 'Ingreso UTS',
       initialRoute: 'splash',
-      routes: {
-        'home': (context) => const HomeScreen(),
-        'splash': (context) => const SplashScreen(),
-        'login': (context) => const LoginScreen(),
-      },
+      routes: MyRoutes.routes,
       theme: UserTheme.mainTheme,
     );
   }

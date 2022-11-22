@@ -6,8 +6,6 @@ class UserTheme {
       primaryColor: primaryColor,
       //Scaffold background
       scaffoldBackgroundColor: Colors.white,
-      bottomNavigationBarTheme:
-          const BottomNavigationBarThemeData(selectedItemColor: primaryColor),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(backgroundColor: primaryColor)));
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(selectedItemColor: primaryColor),
+      elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(backgroundColor: primaryColor)));
 }

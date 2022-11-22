@@ -1,20 +1,23 @@
-// ignore_for_file: unused_local_variable, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:ingresouts/src/preferences_user/preferences_user.dart';
+import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:provider/provider.dart';
 
 import '../auth/auth_config.dart';
+import '../security/security_storage.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height;
@@ -42,9 +45,7 @@ class _LogoSoy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.all(30),
-        child: const Image(image: AssetImage("assets/logo.png")));
+    return Container(margin: const EdgeInsets.all(30), child: const Image(image: AssetImage("assets/logo.png")));
   }
 }
 
@@ -54,7 +55,7 @@ class _LoginAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterAppAuth appAuth = const FlutterAppAuth();
+    final bottomService = Provider.of<BottomService>(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
@@ -62,69 +63,60 @@ class _LoginAction extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.only(left: 10, right: 10),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: UserTheme.primaryColor,
-                shape: const StadiumBorder(),
-              ),
-              onPressed: () async {
-                try {
-                  final result = await appAuth.authorizeAndExchangeCode(
-                    AuthorizationTokenRequest(
-                        AuthConfig.clientId, AuthConfig.redirectUrl,
-                        serviceConfiguration:
-                            AuthConfig.authorizationServiceConfiguration,
-                        scopes: AuthConfig.scopes),
-                  );
-                  final idToken = result!.idToken;
-                  final accessToken = result.accessToken;
-                  Map<String, dynamic> decodedToken =
-                      JwtDecoder.decode(idToken!);
-                  final String correoUser = decodedToken["preferred_username"];
-                  String uri = 'https://graph.microsoft.com/v1.0/me';
-                  Map<String, String> headers = {
-                    'Authorization': '$accessToken',
-                  };
-                  headers.addAll({'responseType': 'arrayBuffer'});
-                  final response =
-                      await http.get(Uri.parse(uri), headers: headers);
-
-                  final photoHttp = await http
-                      .get(Uri.parse("$uri/photo/\$value"), headers: headers);
-                  final printableString = base64.encode(photoHttp.bodyBytes);
-                  UserPreferences.photo = printableString;
-
-                  Map<String, dynamic> userInfo = jsonDecode(response.body);
-                  UserPreferences.job = userInfo["jobTitle"];
-                  UserPreferences.nombre = userInfo["displayName"];
-                  UserPreferences.id = userInfo["id"];
-                  final idTipoToken =
-                      correoUser.substring(correoUser.lastIndexOf("@") + 1);
-                  if (idTipoToken != "correo.uts.edu.co") {
-                    UserPreferences.correo = correoUser;
-                    Navigator.pushReplacementNamed(context, 'home');
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("No eres un docente"),
-                    ));
-                  }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(e.toString()),
-                  ));
-                }
-              },
-              child: Text(
-                "Log in",
-                style: GoogleFonts.firaSans(
-                    textStyle: TextStyle(
-                        fontSize: heightScreen * 0.03, color: Colors.white)),
-              ),
-            ),
+            child: (bottomService.isLoading)
+                ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: UserTheme.primaryColor,
+                      shape: const StadiumBorder(),
+                    ),
+                    onPressed: () async {
+                      bottomService.isLoading = false;
+                      final result = await AuthAzure.oauth.login();
+                      result.fold(
+                        (l) => handleLoginErrors(context),
+                        (r) async {
+                          final accessToken = await AuthAzure.oauth.getAccessToken();
+                          onSucces(context, accessToken!);
+                        },
+                      );
+                    },
+                    child: Text(
+                      "Log in",
+                      style: GoogleFonts.firaSans(
+                          textStyle: TextStyle(
+                        fontSize: heightScreen * 0.03,
+                        color: Colors.white,
+                      )),
+                    ),
+                  )
+                : const CircularProgressIndicator(),
           ),
         ],
       ),
     );
+  }
+
+  void onSucces(BuildContext context, String accessToken) async {
+    Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+    await SecurityStorage.write('name', payload["name"]);
+    await SecurityStorage.write('email', payload["unique_name"]);
+    await SecurityStorage.write('ip', payload["ipaddr"]);
+    final idTipoToken = payload["unique_name"].substring(payload["unique_name"].lastIndexOf("@") + 1);
+    handleLogin(context, idTipoToken);
+  }
+
+  handleLoginErrors(BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Ha ocurrido un error"),
+    ));
+  }
+
+  handleLogin(BuildContext context, String idTipoToken) {
+    (idTipoToken != "correo.uts.edu.co")
+        ? Navigator.pushReplacementNamed(context, 'home')
+        : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("No eres un docente"),
+          ));
   }
 }

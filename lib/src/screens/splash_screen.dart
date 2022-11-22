@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ingresouts/src/preferences_user/preferences_user.dart';
+import 'package:ingresouts/src/security/security_storage.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
 import 'package:lottie/lottie.dart';
 
@@ -13,8 +13,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      UserPreferences.correo == ""
+    Future.delayed(const Duration(milliseconds: 2500), () async {
+      (await SecurityStorage.read("email") == "")
           ? Navigator.pushReplacementNamed(context, 'login')
           : Navigator.pushReplacementNamed(context, 'home');
     });

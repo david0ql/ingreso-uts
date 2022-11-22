@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:ingresouts/src/screens/tabs/list_students.dart';
-import 'package:ingresouts/src/screens/tabs/profile.dart';
+import 'package:ingresouts/src/screens/core/list_students.dart';
+import 'package:ingresouts/src/screens/core/profile.dart';
 import 'package:ingresouts/src/services/bottom_service.dart';
 import 'package:ingresouts/src/theme/usertheme.dart';
 import 'package:ingresouts/src/widgets/custom_bottom_navigation.dart';
@@ -25,14 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         backgroundColor: UserTheme.primaryColor,
         onPressed: () async {
-          String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-              '#3D8BEF', 'Cancelar', true, ScanMode.QR);
+          String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#3D8BEF', 'Cancelar', true, ScanMode.QR);
           String result = barcodeScanRes.substring(55);
           showDialog(
               context: context,
               builder: (BuildContext context) => AlertDialog(
-                    title: const Center(
-                        child: Center(child: Text("Usuario escaneado:"))),
+                    title: const Center(child: Center(child: Text("Usuario escaneado:"))),
                     content: Text(result),
                     actions: [
                       TextButton(
