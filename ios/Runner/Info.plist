@@ -45,16 +45,7 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>CFBundleURLTypes</key>
-<array>
-    <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>graph-tutorial</string>
-        </array>
-    </dict>
-</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera usage description</string>
 </dict>
 </plist>

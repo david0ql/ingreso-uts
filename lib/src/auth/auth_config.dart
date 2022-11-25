@@ -7,8 +7,8 @@ class AuthAzure {
 
   static final Config config = Config(
     tenant: "8c28de3c-6c8e-40a2-beec-bd8827b92802",
-    clientId: "9eb97803-7803-4cbb-8f2e-cfbdf0b22e89",
-    scope: "openid profile offline_access",
+    clientId: "6112809e-ef44-4718-be4d-9826c4eb1ed3",
+    scope: "openid profile offline_access user.read",
     redirectUri: "https://login.live.com/oauth20_desktop.srf",
     navigatorKey: navigatorKey,
   );

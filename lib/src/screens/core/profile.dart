@@ -22,19 +22,24 @@ class _ProfileTabState extends State<ProfileTab> {
           FutureBuilder(
             future: bottomService.getName(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return Text(bottomService.nombre);
+              if (snapshot.hasData) {
+                return Text(bottomService.nombre);
+              }
+
+              return const CircularProgressIndicator();
             },
           ),
           ElevatedButton(
-              style: ElevatedButton.styleFrom(elevation: 1),
-              onPressed: () async {
-                await AuthAzure.oauth.logout();
-                bottomService.isLoading = true;
-                await SecurityStorage.deleteAll();
-                if (!mounted) return;
-                Navigator.pushReplacementNamed(context, 'login');
-              },
-              child: const Text("Cerrar sesion"))
+            style: ElevatedButton.styleFrom(elevation: 1),
+            onPressed: () async {
+              await AuthAzure.oauth.logout();
+              bottomService.isLoading = true;
+              await SecurityStorage.deleteAll();
+              if (!mounted) return;
+              Navigator.pushReplacementNamed(context, 'login');
+            },
+            child: const Text("Cerrar sesion"),
+          ),
         ],
       ),
     );

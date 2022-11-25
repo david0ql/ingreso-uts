@@ -99,9 +99,11 @@ class _LoginAction extends StatelessWidget {
 
   void onSucces(BuildContext context, String accessToken) async {
     Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+    print(payload);
     await SecurityStorage.write('name', payload["name"]);
     await SecurityStorage.write('email', payload["unique_name"]);
     await SecurityStorage.write('ip', payload["ipaddr"]);
+    await SecurityStorage.write('accessToken', accessToken);
     final idTipoToken = payload["unique_name"].substring(payload["unique_name"].lastIndexOf("@") + 1);
     handleLogin(context, idTipoToken);
   }

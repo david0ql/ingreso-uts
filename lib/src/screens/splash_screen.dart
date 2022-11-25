@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 2500), () async {
-      (await SecurityStorage.read("email") == "")
+      (await SecurityStorage.read('email') == "")
           ? Navigator.pushReplacementNamed(context, 'login')
           : Navigator.pushReplacementNamed(context, 'home');
     });

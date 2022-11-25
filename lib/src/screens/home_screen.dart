@@ -15,6 +15,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  void _update() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,21 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () async {
           String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#3D8BEF', 'Cancelar', true, ScanMode.QR);
           String result = barcodeScanRes.substring(55);
-          showDialog(
+          await showDialog(
             context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Center(
-                child: Center(
-                  child: Text("Usuario escaneado:"),
-                ),
-              ),
-              content: Text(result),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'OK'),
-                  child: const Text('OK'),
-                ),
-              ],
+            builder: (BuildContext context) => AlertConfirmUser(
+              result: result,
+              voidCallback: _update,
             ),
           );
         },
